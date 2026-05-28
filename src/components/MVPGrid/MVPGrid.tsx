@@ -6,13 +6,12 @@ interface Props {
   mvps: MVPEntry[];
   timers: TimersMap;
   filter: FilterState;
-  playerName: string;
   onKill: (mvpId: number, locationIndex: number) => void;
   onReset: (mvpId: number, locationIndex: number) => void;
   onMapClick: (mvp: MVPEntry, locationIndex: number) => void;
 }
 
-export function MVPGrid({ mvps, timers, filter, playerName, onKill, onReset, onMapClick }: Props) {
+export function MVPGrid({ mvps, timers, filter, onKill, onReset, onMapClick }: Props) {
   const filtered = mvps.filter((mvp) => {
     if (filter.search && !mvp.name.toLowerCase().includes(filter.search.toLowerCase())) return false;
     if (filter.element && mvp.element !== filter.element) return false;
@@ -36,13 +35,12 @@ export function MVPGrid({ mvps, timers, filter, playerName, onKill, onReset, onM
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 p-4 max-w-screen-2xl mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 p-4 max-w-screen-2xl mx-auto w-full">
       {filtered.map((mvp) => (
         <MVPCard
           key={mvp.id}
           mvp={mvp}
           timers={timers}
-          playerName={playerName}
           onKill={onKill}
           onReset={onReset}
           onMapClick={onMapClick}

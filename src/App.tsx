@@ -9,33 +9,36 @@ import { useMVPTimers } from './hooks/useMVPTimers';
 import { MVPS } from './data/mvps';
 import type { FilterState, MVPEntry } from './types';
 
-const DEFAULT_FILTER: FilterState = {
-  search: '',
-  status: 'all',
-  element: '',
-  race: '',
-};
+const DEFAULT_FILTER: FilterState = { search: '', status: 'all', element: '', race: '' };
 
-interface MapSelection {
-  mvp: MVPEntry;
-  locationIndex: number;
-}
+interface MapSelection { mvp: MVPEntry; locationIndex: number; }
 
 export default function App() {
-  const { room, joinRoom, leaveRoom } = useRoom();
-  const { timers, recordKill, resetTimer, isOnline } = useMVPTimers(room?.roomCode ?? null);
+  const { roomState, loading, error, createRoom, joinRoom, leaveRoom } = useRoom();
+  const inviteCode = roomState?.room.inviteCode ?? null;
+  const { timers, recordKill, placeTomb, resetTimer, isOnline } = useMVPTimers(inviteCode);
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
-  const [mapSelection, setMapSelection] = useState<MapSelection | null>(null);
+  const [mapSel, setMapSel] = useState<MapSelection | null>(null);
 
-  if (!room) {
-    return <RoomSetup onJoin={joinRoom} />;
+  if (!roomState) {
+    return (
+      <RoomSetup
+        loading={loading}
+        error={error}
+        onCreate={createRoom}
+        onJoin={joinRoom}
+      />
+    );
   }
+
+  const { room, playerName } = roomState;
 
   return (
     <div className="min-h-screen bg-ro-dark flex flex-col">
       <Header
-        roomCode={room.roomCode}
-        playerName={room.playerName}
+        roomName={room.name}
+        inviteCode={room.inviteCode}
+        playerName={playerName}
         isOnline={isOnline}
         onLeave={leaveRoom}
       />
@@ -44,16 +47,24 @@ export default function App() {
         mvps={MVPS}
         timers={timers}
         filter={filter}
-        playerName={room.playerName}
-        onKill={(mvpId, locationIndex) => recordKill(mvpId, locationIndex, room.playerName)}
+        onKill={(mvpId, locationIndex) => recordKill(mvpId, locationIndex, playerName)}
         onReset={resetTimer}
-        onMapClick={(mvp, locationIndex) => setMapSelection({ mvp, locationIndex })}
+        onMapClick={(mvp, locationIndex) => setMapSel({ mvp, locationIndex })}
       />
-      {mapSelection && (
+      {mapSel && (
         <MapModal
-          mvp={mapSelection.mvp}
-          locationIndex={mapSelection.locationIndex}
-          onClose={() => setMapSelection(null)}
+          mvp={mapSel.mvp}
+          locationIndex={mapSel.locationIndex}
+          timerEntry={timers[`${mapSel.mvp.id}_${mapSel.locationIndex}`]}
+          onClose={() => setMapSel(null)}
+          onTombPlace={(x, y) => {
+            if (x === -1) {
+              // Remove tomb: update entry without tombX/tombY
+              placeTomb(mapSel.mvp.id, mapSel.locationIndex, -1, -1);
+            } else {
+              placeTomb(mapSel.mvp.id, mapSel.locationIndex, x, y);
+            }
+          }}
         />
       )}
     </div>

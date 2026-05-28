@@ -34,12 +34,21 @@ export interface TimerEntry {
   killedAt: number;
   killedBy: string;
   updatedAt: number;
+  tombX?: number;  // normalized 0-1 position on map image
+  tombY?: number;
 }
 
 export type TimersMap = Record<string, TimerEntry>;
 
+export interface Room {
+  name: string;
+  inviteCode: string;
+  createdBy: string;
+  createdAt: number;
+}
+
 export interface RoomState {
-  roomCode: string;
+  room: Room;
   playerName: string;
 }
 
