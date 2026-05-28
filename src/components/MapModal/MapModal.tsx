@@ -9,10 +9,12 @@ interface Props {
   onTombPlace: (tombX: number, tombY: number) => void;
 }
 
-// Try multiple map image sources
+// Local bundled map images (JPG from ratemyserver), no CDN hotlink needed
+const BASE = import.meta.env.BASE_URL;
 const MAP_SOURCES = [
-  (mapCode: string) => `https://www.divine-pride.net/img/maps/original/${mapCode}.png`,
-  (mapCode: string) => `https://www.divine-pride.net/img/maps/${mapCode}.png`,
+  (mapCode: string) => `${BASE}assets/maps/${mapCode}.jpg`,
+  (mapCode: string) => `https://www.ratemyserver.net/images/maps/${mapCode}.jpg`,
+  (mapCode: string) => `https://www.ratemyserver.net/images/world/${mapCode}.jpg`,
 ];
 
 export function MapModal({ mvp, locationIndex, timerEntry, onClose, onTombPlace }: Props) {
@@ -22,6 +24,11 @@ export function MapModal({ mvp, locationIndex, timerEntry, onClose, onTombPlace 
   const [placingTomb, setPlacingTomb] = useState(false);
 
   const mapSrc = MAP_SOURCES[mapSrcIndex]?.(location.map);
+
+  useEffect(() => {
+    setMapSrcIndex(0);
+    setMapLoaded(false);
+  }, [location.map]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -64,6 +71,7 @@ export function MapModal({ mvp, locationIndex, timerEntry, onClose, onTombPlace 
           >
             {mapSrc ? (
               <img
+                key={mapSrc}
                 src={mapSrc}
                 alt={`Map: ${location.mapName}`}
                 referrerPolicy="no-referrer"

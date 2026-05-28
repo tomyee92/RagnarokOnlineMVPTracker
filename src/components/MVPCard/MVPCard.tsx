@@ -42,8 +42,10 @@ function elementStyle(el: string) {
   return ELEMENT_BADGE[el] ?? 'bg-gray-800/60 text-gray-300';
 }
 
-// Try divine-pride CDN → ratemyserver → placeholder
+// Local bundled sprites first, CDN fallback
+const BASE = import.meta.env.BASE_URL;
 const SPRITE_SOURCES = [
+  (id: number) => `${BASE}assets/sprites/${id}.gif`,
   (id: number) => `https://static.divine-pride.net/images/mobs/gif/${id}.gif`,
   (id: number) => `https://static.divine-pride.net/images/mobs/png/${id}.png`,
 ];

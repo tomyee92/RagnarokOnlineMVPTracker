@@ -80,7 +80,7 @@ export function RoomSetup({ loading, error, onCreate, onJoin }: Props) {
                     type="text"
                     value={roomName}
                     onChange={(e) => setRoomName(e.target.value)}
-                    placeholder="e.g. Xcution"
+                    placeholder="Gravity"
                     maxLength={30}
                     className="w-full bg-ro-input border border-ro-border rounded px-3 py-2 text-white placeholder-ro-muted focus:outline-none focus:border-ro-gold transition-colors"
                     required
@@ -92,7 +92,7 @@ export function RoomSetup({ loading, error, onCreate, onJoin }: Props) {
                     type="text"
                     value={playerName}
                     onChange={(e) => setPlayerName(e.target.value)}
-                    placeholder="e.g. BattleMonk"
+                    placeholder="Loki"
                     maxLength={24}
                     className="w-full bg-ro-input border border-ro-border rounded px-3 py-2 text-white placeholder-ro-muted focus:outline-none focus:border-ro-gold transition-colors"
                     required
@@ -165,7 +165,7 @@ export function RoomSetup({ loading, error, onCreate, onJoin }: Props) {
                     type="text"
                     value={playerName}
                     onChange={(e) => setPlayerName(e.target.value)}
-                    placeholder="e.g. LordKnight"
+                    placeholder="Loki"
                     maxLength={24}
                     className="w-full bg-ro-input border border-ro-border rounded px-3 py-2 text-white placeholder-ro-muted focus:outline-none focus:border-ro-gold transition-colors"
                     required
