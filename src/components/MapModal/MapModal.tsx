@@ -149,7 +149,11 @@ export function MapModal({ mvp, locationIndex, timerEntry, onClose, onTombPlace 
             </div>
             <div className="bg-ro-dark rounded p-2">
               <p className="text-ro-muted text-xs mb-0.5">Respawn</p>
-              <p className="text-white font-medium">{mvp.respawnMin}~{mvp.respawnMin + mvp.respawnWindow} min</p>
+              {(() => {
+                const rMin = location.respawnMin ?? mvp.respawnMin;
+                const rWin = location.respawnWindow ?? mvp.respawnWindow;
+                return <p className="text-white font-medium">{rMin}~{rMin + rWin} min</p>;
+              })()}
             </div>
           </div>
         </div>

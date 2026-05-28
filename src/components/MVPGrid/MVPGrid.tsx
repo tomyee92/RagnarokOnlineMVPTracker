@@ -17,9 +17,11 @@ export function MVPGrid({ mvps, timers, filter, onKill, onReset, onMapClick }: P
     if (filter.element && mvp.element !== filter.element) return false;
     if (filter.race && mvp.race !== filter.race) return false;
     if (filter.status !== 'all') {
-      const hasMatch = mvp.locations.some((_, idx) => {
+      const hasMatch = mvp.locations.some((loc, idx) => {
         const key = `${mvp.id}_${idx}`;
-        return getTimerStatus(timers[key], mvp.respawnMin, mvp.respawnWindow) === filter.status;
+        const rMin = loc.respawnMin ?? mvp.respawnMin;
+        const rWin = loc.respawnWindow ?? mvp.respawnWindow;
+        return getTimerStatus(timers[key], rMin, rWin) === filter.status;
       });
       if (!hasMatch) return false;
     }

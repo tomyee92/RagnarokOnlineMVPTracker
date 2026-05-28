@@ -39,7 +39,8 @@ const ELEMENT_BADGE: Record<string, string> = {
 };
 
 function elementStyle(el: string) {
-  return ELEMENT_BADGE[el] ?? 'bg-gray-800/60 text-gray-300';
+  const base = el.split(' ')[0]; // handle "Dark 3" → "Dark"
+  return ELEMENT_BADGE[base] ?? 'bg-gray-800/60 text-gray-300';
 }
 
 // Local bundled sprites first, then ratemyserver → irowiki CDN fallbacks
@@ -67,9 +68,11 @@ export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
     else setSrcIndex(SPRITE_SOURCES.length); // triggers placeholder
   };
 
-  const overallStatus: TimerStatus = mvp.locations.reduce<TimerStatus>((worst, _, idx) => {
+  const overallStatus: TimerStatus = mvp.locations.reduce<TimerStatus>((worst, loc, idx) => {
     const key = `${mvp.id}_${idx}`;
-    const s = getTimerStatus(timers[key], mvp.respawnMin, mvp.respawnWindow);
+    const rMin = loc.respawnMin ?? mvp.respawnMin;
+    const rWin = loc.respawnWindow ?? mvp.respawnWindow;
+    const s = getTimerStatus(timers[key], rMin, rWin);
     const order: TimerStatus[] = ['alive', 'window', 'dead', 'unknown'];
     return order.indexOf(s) < order.indexOf(worst) ? s : worst;
   }, 'unknown');
@@ -107,7 +110,8 @@ export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
         {mvp.locations.map((loc, idx) => {
           const key = `${mvp.id}_${idx}`;
           const entry = timers[key];
-          const status = getTimerStatus(entry, mvp.respawnMin, mvp.respawnWindow);
+          const rMin = loc.respawnMin ?? mvp.respawnMin;
+          const rWin = loc.respawnWindow ?? mvp.respawnWindow;
 
           return (
             <div key={idx} className="border-t border-ro-border/40 pt-2 first:border-0 first:pt-0">
@@ -119,7 +123,7 @@ export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
                 📍 {loc.mapName}
               </button>
 
-              <MVPTimerBar entry={entry} respawnMin={mvp.respawnMin} respawnWindow={mvp.respawnWindow} />
+              <MVPTimerBar entry={entry} respawnMin={rMin} respawnWindow={rWin} />
 
               <div className="flex gap-2 mt-2">
                 <button
@@ -128,7 +132,7 @@ export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
                 >
                   ☠ KILL
                 </button>
-                {status !== 'unknown' && (
+                {entry && (
                   <button
                     onClick={() => onReset(mvp.id, idx)}
                     className="px-3 bg-ro-input hover:bg-ro-border text-ro-muted hover:text-white text-xs py-1.5 rounded transition-colors"

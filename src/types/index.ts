@@ -1,6 +1,8 @@
 export interface MVPSpawnLocation {
   map: string;
   mapName: string;
+  respawnMin?: number;   // per-location override (minutes); falls back to MVPEntry.respawnMin
+  respawnWindow?: number; // per-location override (minutes); falls back to MVPEntry.respawnWindow
   x?: number;
   y?: number;
 }
