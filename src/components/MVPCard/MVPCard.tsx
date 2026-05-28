@@ -43,10 +43,11 @@ function elementStyle(el: string) {
   return ELEMENT_BADGE[base] ?? 'bg-gray-800/60 text-gray-300';
 }
 
-// Local bundled sprites first, then ratemyserver → irowiki CDN fallbacks
+// Local bundled sprites first (.gif, then .png for newer monsters), then CDN fallbacks
 const BASE = import.meta.env.BASE_URL;
 const SPRITE_SOURCES = [
   (id: number) => `${BASE}assets/sprites/${id}.gif`,
+  (id: number) => `${BASE}assets/sprites/${id}.png`,
   (id: number) => `https://www.ratemyserver.net/mobs/${id}.gif`,
   (id: number) => `https://db.irowiki.org/image/monster/${id}.png`,
 ];
@@ -146,20 +147,7 @@ export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
         })}
       </div>
 
-      {/* MVP Drops */}
-      {mvp.mvpDrops.length > 0 && (
-        <div className="px-3 pb-3 border-t border-ro-border/40 pt-2">
-          <p className="text-ro-muted text-[10px] mb-1 font-semibold tracking-widest uppercase">MVP Drops</p>
-          <div className="space-y-0.5">
-            {mvp.mvpDrops.slice(0, 3).map((drop) => (
-              <div key={drop.itemId} className="flex justify-between text-xs">
-                <span className="text-gray-300 truncate mr-2">{drop.itemName}</span>
-                <span className="text-ro-muted flex-shrink-0">{drop.chance}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }

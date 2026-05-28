@@ -223,26 +223,7 @@ export const MVPS: MVPEntry[] = [
     mvpDrops: [],
     tags: ['classic'],
   },
-  {
-    id: 1204,
-    name: 'Ogretooth',
-    level: 114,
-    hp: 59000,
-    element: 'Dark',
-    race: 'Formless',
-    size: 'Medium',
-    respawnMin: 120,
-    respawnWindow: 60,
-    locations: [
-      { map: 'gefenia01', mapName: 'Gefenia B1', respawnMin: 300 },
-      { map: 'gefenia02', mapName: 'Gefenia B2', respawnMin: 180 },
-      { map: 'gefenia03', mapName: 'Gefenia B3', respawnMin: 300 },
-      { map: 'gefenia04', mapName: 'Gefenia B4', respawnMin: 300 },
-      { map: 'gl_cas02', mapName: 'Glastheim Castle B2' },
-    ],
-    mvpDrops: [],
-    tags: ['classic'],
-  },
+
   {
     id: 1251,
     name: 'Stormy Knight',
@@ -296,22 +277,7 @@ export const MVPS: MVPEntry[] = [
 
   // ── Renewal / Trans Era ───────────────────────────────────────────────────────
 
-  {
-    id: 1300,
-    name: 'Caterpillar',
-    level: 121,
-    hp: 25656,
-    element: 'Earth',
-    race: 'Insect',
-    size: 'Small',
-    respawnMin: 0,
-    respawnWindow: 0,
-    locations: [
-      { map: 'gld_dun03', mapName: 'Guild Dungeon B3' },
-    ],
-    mvpDrops: [],
-    tags: ['renewal', 'guild'],
-  },
+
   {
     id: 1312,
     name: 'Turtle General',
