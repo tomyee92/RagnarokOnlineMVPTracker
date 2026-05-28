@@ -9,12 +9,11 @@ interface Props {
   onTombPlace: (tombX: number, tombY: number) => void;
 }
 
-// Local bundled map images (JPG from ratemyserver), no CDN hotlink needed
+// Local bundled map images first, then irowiki CDN fallback
 const BASE = import.meta.env.BASE_URL;
 const MAP_SOURCES = [
   (mapCode: string) => `${BASE}assets/maps/${mapCode}.jpg`,
-  (mapCode: string) => `https://www.ratemyserver.net/images/maps/${mapCode}.jpg`,
-  (mapCode: string) => `https://www.ratemyserver.net/images/world/${mapCode}.jpg`,
+  (mapCode: string) => `https://db.irowiki.org/image/map/normal/${mapCode}.jpg`,
 ];
 
 export function MapModal({ mvp, locationIndex, timerEntry, onClose, onTombPlace }: Props) {

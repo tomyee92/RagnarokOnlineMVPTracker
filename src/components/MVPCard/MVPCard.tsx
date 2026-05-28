@@ -42,12 +42,12 @@ function elementStyle(el: string) {
   return ELEMENT_BADGE[el] ?? 'bg-gray-800/60 text-gray-300';
 }
 
-// Local bundled sprites first, CDN fallback
+// Local bundled sprites first, then ratemyserver → irowiki CDN fallbacks
 const BASE = import.meta.env.BASE_URL;
 const SPRITE_SOURCES = [
   (id: number) => `${BASE}assets/sprites/${id}.gif`,
-  (id: number) => `https://static.divine-pride.net/images/mobs/gif/${id}.gif`,
-  (id: number) => `https://static.divine-pride.net/images/mobs/png/${id}.png`,
+  (id: number) => `https://www.ratemyserver.net/mobs/${id}.gif`,
+  (id: number) => `https://db.irowiki.org/image/monster/${id}.png`,
 ];
 
 function MonsterPlaceholder({ name }: { name: string }) {
