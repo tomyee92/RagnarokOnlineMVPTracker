@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { MVPEntry, TimersMap, TimerStatus } from '../../types';
+import { useEffect, useState } from 'react';
+import type { MVPEntry, MVPSpawnLocation, TimerEntry, TimersMap, TimerStatus } from '../../types';
 import { getTimerStatus } from '../../utils/timer';
 import { MVPTimerBar } from './MVPTimerBar';
 
@@ -8,7 +8,7 @@ interface Props {
   timers: TimersMap;
   onKill: (mvpId: number, locationIndex: number) => void;
   onReset: (mvpId: number, locationIndex: number) => void;
-  onMapClick: (mvp: MVPEntry, locationIndex: number) => void;
+  onTombPlace: (mvpId: number, locationIndex: number, x: number, y: number) => void;
 }
 
 const CARD_BORDER: Record<TimerStatus, string> = {
@@ -52,6 +52,11 @@ const SPRITE_SOURCES = [
   (id: number) => `https://db.irowiki.org/image/monster/${id}.png`,
 ];
 
+const MAP_SOURCES = [
+  (mapCode: string) => `${BASE}assets/maps/${mapCode}.jpg`,
+  (mapCode: string) => `https://db.irowiki.org/image/map/normal/${mapCode}.jpg`,
+];
+
 function MonsterPlaceholder({ name }: { name: string }) {
   return (
     <div className="w-16 h-16 flex items-center justify-center bg-ro-dark rounded text-center">
@@ -60,8 +65,118 @@ function MonsterPlaceholder({ name }: { name: string }) {
   );
 }
 
-export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
+// Inline expandable map with tomb placement
+function InlineMap({
+  location,
+  timerEntry,
+  onTombPlace,
+}: {
+  location: MVPSpawnLocation;
+  timerEntry: TimerEntry | undefined;
+  onTombPlace: (x: number, y: number) => void;
+}) {
+  const [mapSrcIndex, setMapSrcIndex] = useState(0);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [placingTomb, setPlacingTomb] = useState(false);
+
+  const mapSrc = MAP_SOURCES[mapSrcIndex]?.(location.map);
+
+  useEffect(() => {
+    setMapSrcIndex(0);
+    setMapLoaded(false);
+    setPlacingTomb(false);
+  }, [location.map]);
+
+  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!placingTomb) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    onTombPlace(x, y);
+    setPlacingTomb(false);
+  };
+
+  return (
+    <div className="mt-2 border border-ro-border/30 rounded overflow-hidden">
+      <div
+        className={`relative bg-ro-dark ${placingTomb ? 'cursor-crosshair ring-2 ring-inset ring-yellow-400' : ''}`}
+        onClick={handleMapClick}
+      >
+        {mapSrc ? (
+          <img
+            key={mapSrc}
+            src={mapSrc}
+            alt={`Map: ${location.mapName}`}
+            referrerPolicy="no-referrer"
+            onLoad={() => setMapLoaded(true)}
+            onError={() => {
+              if (mapSrcIndex < MAP_SOURCES.length - 1) setMapSrcIndex(mapSrcIndex + 1);
+              else setMapSrcIndex(MAP_SOURCES.length);
+            }}
+            className="w-full h-auto block max-h-52 object-contain"
+          />
+        ) : (
+          <div className="w-full h-28 flex items-center justify-center text-ro-muted text-xs">
+            Map unavailable: <span className="font-mono ml-1">{location.map}</span>
+          </div>
+        )}
+
+        {/* Tomb marker */}
+        {timerEntry?.tombX !== undefined && timerEntry.tombY !== undefined && mapLoaded && (
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: `${timerEntry.tombX * 100}%`,
+              top: `${timerEntry.tombY * 100}%`,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <div className="relative">
+              <div className="absolute -inset-3 bg-red-500/20 rounded-full animate-ping" />
+              <span className="text-xl relative z-10" title={`Killed by ${timerEntry?.killedBy}`}>☠</span>
+            </div>
+          </div>
+        )}
+
+        {/* Placing hint overlay */}
+        {placingTomb && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="bg-black/60 text-yellow-300 text-xs px-2 py-1 rounded font-semibold">
+              Click to place tomb
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Tomb controls */}
+      <div className="flex gap-1.5 p-1.5 bg-ro-dark/60">
+        <button
+          onClick={() => setPlacingTomb(!placingTomb)}
+          className={`text-xs px-2 py-0.5 rounded border transition-colors ${
+            placingTomb
+              ? 'bg-yellow-800/40 border-yellow-500 text-yellow-300'
+              : 'bg-ro-input border-ro-border text-ro-muted hover:text-white'
+          }`}
+        >
+          ☠ {placingTomb ? 'Cancel' : 'Place Tomb'}
+        </button>
+        {timerEntry?.tombX !== undefined && (
+          <button
+            onClick={() => onTombPlace(-1, -1)}
+            className="text-xs px-2 py-0.5 rounded border border-ro-border bg-ro-input text-ro-muted hover:text-white transition-colors"
+          >
+            Remove
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function MVPCard({ mvp, timers, onKill, onReset, onTombPlace }: Props) {
   const [srcIndex, setSrcIndex] = useState(0);
+  const [expandedLocIdx, setExpandedLocIdx] = useState<number | null>(null);
+
   const imgSrc = SPRITE_SOURCES[srcIndex]?.(mvp.id);
 
   const handleImgError = () => {
@@ -107,21 +222,25 @@ export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
       </div>
 
       {/* Per-location timers */}
-      <div className="px-3 pb-2 flex-1 space-y-3">
+      <div className="px-3 pb-3 flex-1 space-y-3">
         {mvp.locations.map((loc, idx) => {
           const key = `${mvp.id}_${idx}`;
           const entry = timers[key];
           const rMin = loc.respawnMin ?? mvp.respawnMin;
           const rWin = loc.respawnWindow ?? mvp.respawnWindow;
+          const isExpanded = expandedLocIdx === idx;
 
           return (
             <div key={idx} className="border-t border-ro-border/40 pt-2 first:border-0 first:pt-0">
+              {/* Map toggle button */}
               <button
-                onClick={() => onMapClick(mvp, idx)}
-                className="text-xs text-ro-gold hover:text-white transition-colors font-mono text-left"
-                title="Click to view map & place tomb"
+                onClick={() => setExpandedLocIdx(isExpanded ? null : idx)}
+                className={`text-xs font-mono text-left transition-colors ${
+                  isExpanded ? 'text-yellow-300' : 'text-ro-gold hover:text-white'
+                }`}
+                title={isExpanded ? 'Hide map' : 'Show map & place tomb'}
               >
-                📍 {loc.mapName}
+                {isExpanded ? '🗺 ' : '📍 '}{loc.mapName}
               </button>
 
               <MVPTimerBar entry={entry} respawnMin={rMin} respawnWindow={rWin} />
@@ -142,12 +261,19 @@ export function MVPCard({ mvp, timers, onKill, onReset, onMapClick }: Props) {
                   </button>
                 )}
               </div>
+
+              {/* Inline map (expanded) */}
+              {isExpanded && (
+                <InlineMap
+                  location={loc}
+                  timerEntry={entry}
+                  onTombPlace={(x, y) => onTombPlace(mvp.id, idx, x, y)}
+                />
+              )}
             </div>
           );
         })}
       </div>
-
-
     </div>
   );
 }

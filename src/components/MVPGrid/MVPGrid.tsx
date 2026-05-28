@@ -8,10 +8,20 @@ interface Props {
   filter: FilterState;
   onKill: (mvpId: number, locationIndex: number) => void;
   onReset: (mvpId: number, locationIndex: number) => void;
-  onMapClick: (mvp: MVPEntry, locationIndex: number) => void;
+  onTombPlace: (mvpId: number, locationIndex: number, x: number, y: number) => void;
 }
 
-export function MVPGrid({ mvps, timers, filter, onKill, onReset, onMapClick }: Props) {
+/** Returns the most recent killedAt across all locations, or -1 if no timer set */
+function getLatestKill(mvp: MVPEntry, timers: TimersMap): number {
+  let latest = -1;
+  mvp.locations.forEach((_, idx) => {
+    const entry = timers[`${mvp.id}_${idx}`];
+    if (entry && entry.killedAt > latest) latest = entry.killedAt;
+  });
+  return latest;
+}
+
+export function MVPGrid({ mvps, timers, filter, onKill, onReset, onTombPlace }: Props) {
   const filtered = mvps.filter((mvp) => {
     if (filter.search && !mvp.name.toLowerCase().includes(filter.search.toLowerCase())) return false;
     if (filter.element && mvp.element !== filter.element) return false;
@@ -28,7 +38,17 @@ export function MVPGrid({ mvps, timers, filter, onKill, onReset, onMapClick }: P
     return true;
   });
 
-  if (filtered.length === 0) {
+  // Sort: MVPs with any recorded kill first (most recent kill at top), then unknown alphabetically
+  const sorted = [...filtered].sort((a, b) => {
+    const aKill = getLatestKill(a, timers);
+    const bKill = getLatestKill(b, timers);
+    if (aKill === -1 && bKill === -1) return a.name.localeCompare(b.name);
+    if (aKill === -1) return 1;
+    if (bKill === -1) return -1;
+    return bKill - aKill; // most recent kill first
+  });
+
+  if (sorted.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center text-ro-muted py-20">
         No MVPs match the current filter.
@@ -38,14 +58,14 @@ export function MVPGrid({ mvps, timers, filter, onKill, onReset, onMapClick }: P
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 p-4 max-w-screen-2xl mx-auto w-full">
-      {filtered.map((mvp) => (
+      {sorted.map((mvp) => (
         <MVPCard
           key={mvp.id}
           mvp={mvp}
           timers={timers}
           onKill={onKill}
           onReset={onReset}
-          onMapClick={onMapClick}
+          onTombPlace={onTombPlace}
         />
       ))}
     </div>
