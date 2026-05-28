@@ -124,16 +124,20 @@ function InlineMap({
         {/* Tomb marker */}
         {timerEntry?.tombX !== undefined && timerEntry.tombY !== undefined && mapLoaded && (
           <div
-            className="absolute pointer-events-none"
+            className="absolute pointer-events-none z-10"
             style={{
               left: `${timerEntry.tombX * 100}%`,
               top: `${timerEntry.tombY * 100}%`,
               transform: 'translate(-50%, -50%)',
             }}
           >
-            <div className="relative">
-              <div className="absolute -inset-3 bg-red-500/20 rounded-full animate-ping" />
-              <span className="text-xl relative z-10" title={`Killed by ${timerEntry?.killedBy}`}>☠</span>
+            <div className="relative flex items-center justify-center">
+              {/* Outer ping ring */}
+              <div className="absolute w-8 h-8 rounded-full bg-fuchsia-500/50 animate-ping" />
+              {/* Solid colored dot backing */}
+              <div className="w-6 h-6 rounded-full bg-fuchsia-600 border-2 border-fuchsia-300 shadow-lg shadow-fuchsia-500/80 flex items-center justify-center relative z-10">
+                <span className="text-white text-xs leading-none" title={`Killed by ${timerEntry?.killedBy}`}>☠</span>
+              </div>
             </div>
           </div>
         )}
