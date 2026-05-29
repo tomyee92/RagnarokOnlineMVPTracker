@@ -179,7 +179,26 @@ function InlineMap({
 
 export function MVPCard({ mvp, timers, onKill, onReset, onTombPlace }: Props) {
   const [srcIndex, setSrcIndex] = useState(0);
-  const [expandedLocIdx, setExpandedLocIdx] = useState<number | null>(null);
+
+  // Persist collapse state per MVP in localStorage.
+  // Default = all expanded (empty collapsed set = first-time user sees maps open).
+  const storageKey = `mvp_map_${mvp.id}`;
+  const [collapsedLocs, setCollapsedLocs] = useState<Set<number>>(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) return new Set<number>(JSON.parse(saved) as number[]);
+    } catch { /* ignore */ }
+    return new Set<number>(); // all expanded by default
+  });
+
+  const toggleLoc = (idx: number) => {
+    setCollapsedLocs((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx); else next.add(idx);
+      try { localStorage.setItem(storageKey, JSON.stringify([...next])); } catch { /* ignore */ }
+      return next;
+    });
+  };
 
   const imgSrc = SPRITE_SOURCES[srcIndex]?.(mvp.id);
 
@@ -232,13 +251,13 @@ export function MVPCard({ mvp, timers, onKill, onReset, onTombPlace }: Props) {
           const entry = timers[key];
           const rMin = loc.respawnMin ?? mvp.respawnMin;
           const rWin = loc.respawnWindow ?? mvp.respawnWindow;
-          const isExpanded = expandedLocIdx === idx;
+          const isExpanded = !collapsedLocs.has(idx); // default: expanded
 
           return (
             <div key={idx} className="border-t border-ro-border/40 pt-2 first:border-0 first:pt-0">
               {/* Map toggle button */}
               <button
-                onClick={() => setExpandedLocIdx(isExpanded ? null : idx)}
+                onClick={() => toggleLoc(idx)}
                 className={`text-xs font-mono text-left transition-colors ${
                   isExpanded ? 'text-yellow-300' : 'text-ro-gold hover:text-white'
                 }`}
