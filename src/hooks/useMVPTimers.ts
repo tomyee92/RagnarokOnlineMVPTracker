@@ -47,6 +47,21 @@ export function useMVPTimers(inviteCode: string | null) {
     [inviteCode]
   );
 
+  /** Record a kill with a custom timestamp (used for "Kill by Other" with manual death time). */
+  const recordKillAt = useCallback(
+    (mvpId: number, locationIndex: number, killedBy: string, killedAt: number) => {
+      const db = getDb();
+      const key = `${mvpId}_${locationIndex}`;
+      const entry: TimerEntry = { killedAt, killedBy, updatedAt: Date.now() };
+      if (db && inviteCode) {
+        set(ref(db, `rooms/${inviteCode}/timers/${key}`), entry);
+      } else {
+        setTimers((prev) => ({ ...prev, [key]: entry }));
+      }
+    },
+    [inviteCode]
+  );
+
   const placeTomb = useCallback(
     (mvpId: number, locationIndex: number, tombX: number, tombY: number) => {
       const db = getDb();
@@ -122,5 +137,5 @@ export function useMVPTimers(inviteCode: string | null) {
     [inviteCode]
   );
 
-  return { timers, pings, recordKill, placeTomb, resetTimer, pingMVP, clearPing, isOnline };
+  return { timers, pings, recordKill, recordKillAt, placeTomb, resetTimer, pingMVP, clearPing, isOnline };
 }

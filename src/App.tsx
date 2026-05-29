@@ -13,7 +13,7 @@ const DEFAULT_FILTER: FilterState = { search: '', status: 'all', element: '', ra
 export default function App() {
   const { roomState, loading, error, createRoom, joinRoom, leaveRoom } = useRoom();
   const inviteCode = roomState?.room.inviteCode ?? null;
-  const { timers, pings, recordKill, placeTomb, resetTimer, pingMVP, clearPing, isOnline } = useMVPTimers(inviteCode);
+  const { timers, pings, recordKill, recordKillAt, placeTomb, resetTimer, pingMVP, clearPing, isOnline } = useMVPTimers(inviteCode);
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
 
   if (!roomState) {
@@ -45,6 +45,7 @@ export default function App() {
         pings={pings}
         filter={filter}
         onKill={(mvpId, locationIndex) => recordKill(mvpId, locationIndex, playerName)}
+        onKillAt={(mvpId, locationIndex, killedAt, killedBy) => recordKillAt(mvpId, locationIndex, killedBy, killedAt)}
         onReset={resetTimer}
         onTombPlace={(mvpId, locationIndex, x, y) => placeTomb(mvpId, locationIndex, x, y)}
         onPing={(mvpId) => pingMVP(mvpId, playerName)}

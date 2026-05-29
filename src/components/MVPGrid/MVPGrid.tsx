@@ -8,6 +8,7 @@ interface Props {
   pings: PingsMap;
   filter: FilterState;
   onKill: (mvpId: number, locationIndex: number) => void;
+  onKillAt: (mvpId: number, locationIndex: number, killedAt: number, killedBy: string) => void;
   onReset: (mvpId: number, locationIndex: number) => void;
   onTombPlace: (mvpId: number, locationIndex: number, x: number, y: number) => void;
   onPing: (mvpId: number) => void;
@@ -31,7 +32,7 @@ function getLatestKill(mvp: MVPEntry, timers: TimersMap): number {
   return latest;
 }
 
-export function MVPGrid({ mvps, timers, pings, filter, onKill, onReset, onTombPlace, onPing, onClearPing }: Props) {
+export function MVPGrid({ mvps, timers, pings, filter, onKill, onKillAt, onReset, onTombPlace, onPing, onClearPing }: Props) {
   const filtered = mvps.filter((mvp) => {
     if (filter.search && !mvp.name.toLowerCase().includes(filter.search.toLowerCase())) return false;
     if (filter.element && mvp.element !== filter.element) return false;
@@ -82,6 +83,7 @@ export function MVPGrid({ mvps, timers, pings, filter, onKill, onReset, onTombPl
           timers={timers}
           ping={pings[String(mvp.id)]}
           onKill={onKill}
+          onKillAt={onKillAt}
           onReset={onReset}
           onTombPlace={onTombPlace}
           onPing={onPing}
