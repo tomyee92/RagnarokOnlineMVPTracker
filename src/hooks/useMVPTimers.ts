@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ref, onValue, set, remove, update, type DatabaseReference } from 'firebase/database';
 import { getDb } from '../firebase/config';
-import type { TimersMap, TimerEntry } from '../types';
+import type { TimersMap, TimerEntry, PingsMap, PingEntry } from '../types';
 
 export function useMVPTimers(inviteCode: string | null) {
   const [timers, setTimers] = useState<TimersMap>({});
+  const [pings, setPings] = useState<PingsMap>({});
   const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
@@ -12,13 +13,24 @@ export function useMVPTimers(inviteCode: string | null) {
     setIsOnline(!!db);
     if (!inviteCode || !db) {
       setTimers({});
+      setPings({});
       return;
     }
+
     const timersRef = ref(db, `rooms/${inviteCode}/timers`);
-    const unsub = onValue(timersRef, (snapshot) => {
+    const unsubTimers = onValue(timersRef, (snapshot) => {
       setTimers((snapshot.val() as TimersMap) ?? {});
     });
-    return unsub;
+
+    const pingsRef = ref(db, `rooms/${inviteCode}/pings`);
+    const unsubPings = onValue(pingsRef, (snapshot) => {
+      setPings((snapshot.val() as PingsMap) ?? {});
+    });
+
+    return () => {
+      unsubTimers();
+      unsubPings();
+    };
   }, [inviteCode]);
 
   const recordKill = useCallback(
@@ -79,5 +91,36 @@ export function useMVPTimers(inviteCode: string | null) {
     [inviteCode]
   );
 
-  return { timers, recordKill, placeTomb, resetTimer, isOnline };
+  const pingMVP = useCallback(
+    (mvpId: number, playerName: string) => {
+      const db = getDb();
+      const key = String(mvpId);
+      const entry: PingEntry = { pingedBy: playerName, pingedAt: Date.now() };
+      if (db && inviteCode) {
+        set(ref(db, `rooms/${inviteCode}/pings/${key}`), entry);
+      } else {
+        setPings((prev) => ({ ...prev, [key]: entry }));
+      }
+    },
+    [inviteCode]
+  );
+
+  const clearPing = useCallback(
+    (mvpId: number) => {
+      const db = getDb();
+      const key = String(mvpId);
+      if (db && inviteCode) {
+        remove(ref(db, `rooms/${inviteCode}/pings/${key}`));
+      } else {
+        setPings((prev) => {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        });
+      }
+    },
+    [inviteCode]
+  );
+
+  return { timers, pings, recordKill, placeTomb, resetTimer, pingMVP, clearPing, isOnline };
 }

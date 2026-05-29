@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
-import type { MVPEntry, MVPSpawnLocation, TimerEntry, TimersMap, TimerStatus } from '../../types';
+import type { MVPEntry, MVPSpawnLocation, TimerEntry, TimersMap, TimerStatus, PingEntry } from '../../types';
 import { getTimerStatus } from '../../utils/timer';
+import { isPingActive } from '../MVPGrid/MVPGrid';
 import { MVPTimerBar } from './MVPTimerBar';
 
 interface Props {
   mvp: MVPEntry;
   timers: TimersMap;
+  ping: PingEntry | undefined;
   onKill: (mvpId: number, locationIndex: number) => void;
   onReset: (mvpId: number, locationIndex: number) => void;
   onTombPlace: (mvpId: number, locationIndex: number, x: number, y: number) => void;
+  onPing: (mvpId: number) => void;
+  onClearPing: (mvpId: number) => void;
 }
 
 const CARD_BORDER: Record<TimerStatus, string> = {
@@ -177,7 +181,7 @@ function InlineMap({
   );
 }
 
-export function MVPCard({ mvp, timers, onKill, onReset, onTombPlace }: Props) {
+export function MVPCard({ mvp, timers, ping, onKill, onReset, onTombPlace, onPing, onClearPing }: Props) {
   const [srcIndex, setSrcIndex] = useState(0);
 
   // Persist collapse state per MVP in localStorage.
@@ -216,8 +220,27 @@ export function MVPCard({ mvp, timers, onKill, onReset, onTombPlace }: Props) {
     return order.indexOf(s) < order.indexOf(worst) ? s : worst;
   }, 'unknown');
 
+  const pinged = isPingActive(ping);
+
   return (
-    <div className={`rounded-lg border ${CARD_BORDER[overallStatus]} ${CARD_BG[overallStatus]} overflow-hidden flex flex-col bg-ro-card transition-colors duration-500`}>
+    <div className={`rounded-lg border ${pinged ? 'border-orange-400' : CARD_BORDER[overallStatus]} ${CARD_BG[overallStatus]} overflow-hidden flex flex-col bg-ro-card transition-colors duration-500`}>
+
+      {/* Ping alert banner */}
+      {pinged && (
+        <div className="flex items-center justify-between gap-2 bg-orange-500/20 border-b border-orange-500/40 px-3 py-1.5">
+          <span className="text-orange-300 text-xs font-bold animate-pulse">
+            📢 Pinged by {ping!.pingedBy}
+          </span>
+          <button
+            onClick={() => onClearPing(mvp.id)}
+            className="text-orange-400 hover:text-white text-xs transition-colors"
+            title="Dismiss ping"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Header row */}
       <div className="flex items-start gap-3 p-3">
         <div className="w-16 h-16 flex-shrink-0 flex items-center justify-center bg-ro-dark rounded overflow-hidden">
@@ -234,7 +257,19 @@ export function MVPCard({ mvp, timers, onKill, onReset, onTombPlace }: Props) {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-white font-semibold text-sm leading-tight">{mvp.name}</h3>
+          <div className="flex items-start justify-between gap-1">
+            <h3 className="text-white font-semibold text-sm leading-tight">{mvp.name}</h3>
+            {/* Ping button */}
+            <button
+              onClick={() => pinged ? onClearPing(mvp.id) : onPing(mvp.id)}
+              title={pinged ? 'Clear ping' : 'Ping guild — moves this card to top'}
+              className={`flex-shrink-0 text-base leading-none transition-colors ${
+                pinged ? 'text-orange-400 hover:text-orange-300' : 'text-ro-muted hover:text-orange-400'
+              }`}
+            >
+              📢
+            </button>
+          </div>
           <div className="flex flex-wrap gap-1 mt-1">
             <span className={`text-xs px-1.5 py-0.5 rounded ${elementStyle(mvp.element)}`}>{mvp.element}</span>
             <span className="text-xs px-1.5 py-0.5 rounded bg-gray-800/60 text-gray-400">{mvp.race}</span>

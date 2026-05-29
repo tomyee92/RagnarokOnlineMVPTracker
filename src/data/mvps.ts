@@ -782,7 +782,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 120,
     respawnWindow: 60,
     locations: [
-      { map: 'teg_dun01', mapName: 'Edda Dungeon B1' },
+      { map: 'teg_dun01', mapName: 'Guild Underground Dungeon' },
     ],
     mvpDrops: [],
     tags: ['renewal'],
@@ -798,7 +798,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 120,
     respawnWindow: 60,
     locations: [
-      { map: 'teg_dun02', mapName: 'Edda Dungeon B2' },
+      { map: 'teg_dun02', mapName: 'Guild Underground Dungeon' },
     ],
     mvpDrops: [],
     tags: ['renewal'],
@@ -881,7 +881,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 0,
     respawnWindow: 0,
     locations: [
-      { map: 'rockmi1', mapName: 'Rocky Mine' },
+      { map: 'rockmi1', mapName: 'Rock Ridge Mine' },
     ],
     mvpDrops: [],
     tags: ['3rd'],
@@ -900,7 +900,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 0,
     respawnWindow: 0,
     locations: [
-      { map: 'com_d02_i', mapName: 'Comunidad Dungeon B2' },
+      { map: 'com_d02_i', mapName: 'Northern Cave Luanda' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -916,7 +916,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 0,
     respawnWindow: 0,
     locations: [
-      { map: 'com_d02_i', mapName: 'Comunidad Dungeon B2' },
+      { map: 'com_d02_i', mapName: 'Northern Cave Luanda' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -932,7 +932,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 60,
     respawnWindow: 60,
     locations: [
-      { map: 'sp_rudus2', mapName: 'Rudus B2' },
+      { map: 'sp_rudus2', mapName: 'Laboratory Waste Disposal Plant Rudus Floor 2' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -948,7 +948,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 120,
     respawnWindow: 60,
     locations: [
-      { map: 'mag_dun03', mapName: 'Magma Dungeon B3' },
+      { map: 'mag_dun03', mapName: 'Juno Norgroad Floor 3' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -996,7 +996,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 360,
     respawnWindow: 60,
     locations: [
-      { map: 'oz_dun02', mapName: 'Oz Dungeon B2' },
+      { map: 'oz_dun02', mapName: 'Oz Labyrinth 2F' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -1012,7 +1012,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 0,
     respawnWindow: 0,
     locations: [
-      { map: 'ant_d02_i', mapName: 'Ant Dungeon B2' },
+      { map: 'ant_d02_i', mapName: 'Garden of Awareness' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -1028,7 +1028,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 360,
     respawnWindow: 60,
     locations: [
-      { map: 'jor_back3', mapName: 'Geffen Jungle B3' },
+      { map: 'jor_back3', mapName: 'Frozen Scale Glacier' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -1111,7 +1111,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 180,
     respawnWindow: 60,
     locations: [
-      { map: 'sp_rudus4', mapName: 'Waste Disposal Plant Rudus Floor 4' },
+      { map: 'sp_rudus4', mapName: 'Laboratory Waste Disposal Plant Rudus Floor 4' },
     ],
     mvpDrops: [],
     tags: ['ep19'],
@@ -1146,7 +1146,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 360,
     respawnWindow: 60,
     locations: [
-      { map: 'bl_ice', mapName: 'Biosphere - Ice' },
+      { map: 'bl_ice', mapName: 'Biosphere Environment - Ice' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -1162,7 +1162,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 360,
     respawnWindow: 60,
     locations: [
-      { map: 'bl_lava', mapName: 'Biosphere - Fire' },
+      { map: 'bl_lava', mapName: 'Biosphere Environment - Fire' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -1178,7 +1178,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 360,
     respawnWindow: 60,
     locations: [
-      { map: 'bl_death', mapName: 'Biosphere - Death' },
+      { map: 'bl_death', mapName: 'Biosphere Environment - Death' },
     ],
     mvpDrops: [],
     tags: ['ep20'],
@@ -1194,7 +1194,7 @@ export const MVPS: MVPEntry[] = [
     respawnMin: 360,
     respawnWindow: 60,
     locations: [
-      { map: 'bl_grass', mapName: 'Biosphere - Grass' },
+      { map: 'bl_grass', mapName: 'Biosphere Environment - Grass' },
     ],
     mvpDrops: [],
     tags: ['ep20'],

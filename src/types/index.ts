@@ -42,6 +42,14 @@ export interface TimerEntry {
 
 export type TimersMap = Record<string, TimerEntry>;
 
+export interface PingEntry {
+  pingedBy: string;
+  pingedAt: number;
+}
+
+/** key = mvpId as string */
+export type PingsMap = Record<string, PingEntry>;
+
 export interface Room {
   name: string;
   inviteCode: string;
