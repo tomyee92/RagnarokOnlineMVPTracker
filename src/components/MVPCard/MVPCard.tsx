@@ -56,9 +56,11 @@ const SPRITE_SOURCES = [
   (id: number) => `https://db.irowiki.org/image/monster/${id}.png`,
 ];
 
+// Only local bundled maps — irowiki returns a "Report Missing Map" placeholder
+// image (300×300 PNG, 4599 bytes) for EP19+ content instead of a real 404, so
+// we skip it entirely. Missing maps fall through to the text unavailable message.
 const MAP_SOURCES = [
   (mapCode: string) => `${BASE}assets/maps/${mapCode}.jpg`,
-  (mapCode: string) => `https://db.irowiki.org/image/map/normal/${mapCode}.jpg`,
 ];
 
 function MonsterPlaceholder({ name }: { name: string }) {
