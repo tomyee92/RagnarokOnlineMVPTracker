@@ -53,14 +53,14 @@ export function Header({ roomName, inviteCode, playerName, isOnline, onLeave }: 
             </button>
           </div>
 
-          <span
-            className={`text-xs px-2 py-0.5 rounded border ${
-              isOnline ? 'border-green-700 text-green-400' : 'border-yellow-800 text-yellow-600'
-            }`}
-            title={isOnline ? 'Real-time guild sync active' : 'Local mode — configure Firebase to enable guild sync'}
-          >
-            {isOnline ? 'ONLINE' : 'LOCAL'}
-          </span>
+          {isOnline && (
+            <span
+              className="text-xs px-2 py-0.5 rounded border border-green-700 text-green-400"
+              title="Real-time guild sync active"
+            >
+              ONLINE
+            </span>
+          )}
 
           <button
             onClick={onLeave}
