@@ -897,8 +897,8 @@ export const MVPS: MVPEntry[] = [
     element: 'Neutral',
     race: 'Demon',
     size: 'Large',
-    respawnMin: 0,
-    respawnWindow: 0,
+    respawnMin: 120,
+    respawnWindow: 60,
     locations: [
       { map: 'com_d02_i', mapName: 'Northern Cave Luanda' },
     ],
@@ -913,8 +913,8 @@ export const MVPS: MVPEntry[] = [
     element: 'Fire',
     race: 'Demi-Human',
     size: 'Large',
-    respawnMin: 0,
-    respawnWindow: 0,
+    respawnMin: 120,
+    respawnWindow: 60,
     locations: [
       { map: 'com_d02_i', mapName: 'Northern Cave Luanda' },
     ],
@@ -1009,8 +1009,8 @@ export const MVPS: MVPEntry[] = [
     element: 'Neutral',
     race: 'Insect',
     size: 'Large',
-    respawnMin: 0,
-    respawnWindow: 0,
+    respawnMin: 120,
+    respawnWindow: 60,
     locations: [
       { map: 'ant_d02_i', mapName: 'Garden of Awareness' },
     ],
@@ -1131,6 +1131,57 @@ export const MVPS: MVPEntry[] = [
     ],
     mvpDrops: [],
     tags: ['ep20'],
+  },
+
+  // ── EP19 — Previously skipped (instant on kRO default, 2h on Renewal) ───
+
+  {
+    id: 20118,
+    name: 'Goblin King',
+    level: 255,
+    hp: 343542229,
+    element: 'Wind',
+    race: 'Demi-Human',
+    size: 'Medium',
+    respawnMin: 120,
+    respawnWindow: 60,
+    locations: [
+      { map: 'clock_01', mapName: 'Clock Tower Unknown Basement' },
+    ],
+    mvpDrops: [],
+    tags: ['ep19'],
+  },
+  {
+    id: 20610,
+    name: 'Valkyrie Reginleif',
+    level: 207,
+    hp: 79619337,
+    element: 'Fire',
+    race: 'Angel',
+    size: 'Medium',
+    respawnMin: 120,
+    respawnWindow: 60,
+    locations: [
+      { map: 'odin_past', mapName: "Ancient Odin's Temple" },
+    ],
+    mvpDrops: [],
+    tags: ['ep19'],
+  },
+  {
+    id: 20611,
+    name: 'Valkyrie Ingrid',
+    level: 207,
+    hp: 79577937,
+    element: 'Water',
+    race: 'Angel',
+    size: 'Medium',
+    respawnMin: 120,
+    respawnWindow: 60,
+    locations: [
+      { map: 'odin_past', mapName: "Ancient Odin's Temple" },
+    ],
+    mvpDrops: [],
+    tags: ['ep19'],
   },
 
   // ── Beyond the Limit (Biosphere) Bosses ──────────────────────────────────
