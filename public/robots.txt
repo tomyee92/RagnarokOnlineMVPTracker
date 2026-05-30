@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tomyee92.github.io/RagnarokOnlineMVPTracker/sitemap.xml
