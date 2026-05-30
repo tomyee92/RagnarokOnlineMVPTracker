@@ -97,6 +97,30 @@ interface PingEntry {
   pingedBy: string;
   pingedAt: number;
 }
+
+type FilterStatus = 'all' | 'unknown' | 'dead' | 'window' | 'alive';
+
+interface FilterState {
+  search: string;       // name substring match (case-insensitive)
+  status: FilterStatus; // timer state filter
+  element: string;      // "" = all
+  race: string;         // "" = all
+}
+
+interface Room {
+  name: string;
+  inviteCode: string;
+  createdBy: string;
+  createdAt: number;
+}
+
+interface RoomState {
+  room: Room;
+  playerName: string;
+}
+
+type TimersMap = Record<string, TimerEntry>;   // key = "{mvpId}_{locIdx}"
+type PingsMap  = Record<string, PingEntry>;    // key = mvpId as string
 ```
 
 ---
@@ -116,7 +140,7 @@ interface PingEntry {
     pingedAt:  number
 ```
 
-Env vars needed (`.env.local`):
+Env vars needed — copy `.env.example` → `.env.local` and fill in values:
 ```
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
@@ -126,8 +150,10 @@ VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
+Get values from: Firebase Console → Project Settings → Your apps → SDK setup.  
+Same vars must be added as GitHub repo secrets for CI/CD deploy to work with Firebase.
 
-Without Firebase configured, the app runs in local-only mode (no ONLINE badge shown).
+Without Firebase configured, the app runs in local-only mode (no sync, no ONLINE badge).
 
 ---
 
@@ -174,6 +200,23 @@ Map collapse state persisted per MVP in `localStorage` key `mvp_map_{id}`. Defau
 
 ---
 
+## Filter Bar (`src/components/FilterBar/FilterBar.tsx`)
+
+Four live filters, all combinable:
+
+| Filter | Type | Values |
+|---|---|---|
+| **Search** | text input | name substring, case-insensitive |
+| **Status** | dropdown | All / Unknown / Dead / Window / Alive |
+| **Element** | dropdown | All + each unique element from `ALL_ELEMENTS` |
+| **Race** | dropdown | All + each unique race from `ALL_RACES` |
+
+`ALL_ELEMENTS` and `ALL_RACES` are derived sets exported from `src/data/mvps.ts`.  
+A **Clear** button appears when any filter is active.  
+Filtering is applied in `App.tsx` before passing props to `MVPGrid`.
+
+---
+
 ## Asset Sources
 
 ### Sprites (`public/assets/sprites/`)
@@ -210,11 +253,8 @@ To add a missing map: download from `https://file5s.ratemyserver.net/maps_xl/{ma
 ### MVPs with respawnWindow: 0 (exact timer, no yellow phase)
 Ancient Tao Gunka, Ancient Wootan Defender, Silent Maya, Goblin King, Valkyrie Reginleif, Valkyrie Ingrid, all Guild Dungeon MVPs, Spider Chariot
 
-### Maps with no image available (show "Map unavailable" text)
-These EP19/20 maps have no image on any public CDN yet:
-`teg_dun01`, `teg_dun02`, `rockmi1`, `com_d02_i`, `oz_dun02`, `ant_d02_i`, `ein_dun03`, `abyss_04`, `ba_lost`, `amicitia2`, `sp_rudus2`, `sp_rudus4`, `nif_dun02`, `jor_back3`, `bl_ice`, `bl_lava`, `bl_death`, `bl_grass`
-
-**Wait** — these were actually downloaded from ratemyserver maps_xl and ARE available. Maps that truly have no image: none currently known.
+### Maps with no image available
+All EP19/20 maps have been downloaded from `ratemyserver maps_xl` and are bundled locally. **No maps are currently missing.** If a new map is added and its image is absent, the card shows "Map unavailable" text — fix by downloading from `https://file5s.ratemyserver.net/maps_xl/{mapCode}.gif` and placing in `public/assets/maps/`.
 
 ---
 
@@ -242,6 +282,7 @@ These EP19/20 maps have no image on any public CDN yet:
 | `3940765` | Google Search Console verification file |
 | `812de92` | Fix 3 instant-spawn MVPs + add Goblin King, Valkyrie Reginleif/Ingrid |
 | `a014891` | Set respawnWindow=0 for 6 MVPs (irowiki shows no window) |
+| `d2a5af8` | Fix Spider Chariot respawnWindow 60→0 (missed in a014891) |
 
 ---
 
