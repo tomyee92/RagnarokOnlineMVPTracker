@@ -879,7 +879,7 @@ export const MVPS: MVPEntry[] = [
     race: 'Formless',
     size: 'Large',
     respawnMin: 120,
-    respawnWindow: 60,
+    respawnWindow: 0,
     locations: [
       { map: 'rockmi1', mapName: 'Rock Ridge Mine' },
     ],
