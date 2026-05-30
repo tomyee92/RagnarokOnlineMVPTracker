@@ -898,7 +898,7 @@ export const MVPS: MVPEntry[] = [
     race: 'Demon',
     size: 'Large',
     respawnMin: 120,
-    respawnWindow: 60,
+    respawnWindow: 0,
     locations: [
       { map: 'com_d02_i', mapName: 'Northern Cave Luanda' },
     ],
@@ -914,7 +914,7 @@ export const MVPS: MVPEntry[] = [
     race: 'Demi-Human',
     size: 'Large',
     respawnMin: 120,
-    respawnWindow: 60,
+    respawnWindow: 0,
     locations: [
       { map: 'com_d02_i', mapName: 'Northern Cave Luanda' },
     ],
@@ -1010,7 +1010,7 @@ export const MVPS: MVPEntry[] = [
     race: 'Insect',
     size: 'Large',
     respawnMin: 120,
-    respawnWindow: 60,
+    respawnWindow: 0,
     locations: [
       { map: 'ant_d02_i', mapName: 'Garden of Awareness' },
     ],
@@ -1144,7 +1144,7 @@ export const MVPS: MVPEntry[] = [
     race: 'Demi-Human',
     size: 'Medium',
     respawnMin: 120,
-    respawnWindow: 60,
+    respawnWindow: 0,
     locations: [
       { map: 'clock_01', mapName: 'Clock Tower Unknown Basement' },
     ],
@@ -1160,7 +1160,7 @@ export const MVPS: MVPEntry[] = [
     race: 'Angel',
     size: 'Medium',
     respawnMin: 120,
-    respawnWindow: 60,
+    respawnWindow: 0,
     locations: [
       { map: 'odin_past', mapName: "Ancient Odin's Temple" },
     ],
@@ -1176,7 +1176,7 @@ export const MVPS: MVPEntry[] = [
     race: 'Angel',
     size: 'Medium',
     respawnMin: 120,
-    respawnWindow: 60,
+    respawnWindow: 0,
     locations: [
       { map: 'odin_past', mapName: "Ancient Odin's Temple" },
     ],
